@@ -20,7 +20,7 @@ CSS = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
 :root { --cyan:#00f0ff; --pink:#ff2bd6; --yellow:#f5ff3b; --violet:#9d4dff; --ink:#05010d; }
-html, body, [class*="css"], .stMarkdown, .stTextInput input, button { font-family:'Inter', sans-serif !important; }
+html, body, .stApp p, .stApp li, .stApp label, .stApp button, .stApp summary, .stApp [data-testid="stMarkdownContainer"], .stApp [data-testid="stCaptionContainer"], .stApp [data-testid="stWidgetLabel"] { font-family:'Inter', sans-serif !important; }
 .stApp {
   background:
     linear-gradient(rgba(0,240,255,.05) 1px, transparent 1px) 0 0/44px 44px,
@@ -37,7 +37,7 @@ html, body, [class*="css"], .stMarkdown, .stTextInput input, button { font-famil
 header[data-testid="stHeader"] { background:transparent; }
 
 .hero { padding:6px 0 10px; }
-.badge { display:inline-block; font-family:'JetBrains Mono', monospace; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
+.badge { display:inline-block; font-family:'JetBrains Mono', monospace !important; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
   color:var(--yellow); border:1px solid var(--yellow); padding:5px 12px; box-shadow:0 0 12px rgba(245,255,59,.35), inset 0 0 8px rgba(245,255,59,.15);
   clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px); }
 .hero h1 { font-family:'Space Grotesk', sans-serif !important; font-size:2.8rem; line-height:1.05; font-weight:700; margin:.7rem 0 .5rem;
@@ -47,13 +47,13 @@ header[data-testid="stHeader"] { background:transparent; }
 .hero p { color:#c9c3e6; font-size:1.02rem; line-height:1.55; margin:0; }
 
 .pipeline { display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 6px; align-items:center; }
-.step { font-family:'JetBrains Mono', monospace; font-size:.76rem; color:#e9e4ff; padding:7px 12px;
+.step { font-family:'JetBrains Mono', monospace !important; font-size:.76rem; color:#e9e4ff; padding:7px 12px;
   background:rgba(157,77,255,.10); border:1px solid rgba(157,77,255,.55); box-shadow:0 0 10px rgba(157,77,255,.25);
   clip-path:polygon(6px 0,100% 0,100% calc(100% - 6px),calc(100% - 6px) 100%,0 100%,0 6px); }
 .step b { color:var(--cyan); margin-right:6px; text-shadow:0 0 8px var(--cyan); }
 .arrow { color:var(--pink); font-size:.9rem; text-shadow:0 0 8px var(--pink); }
 
-.label { font-family:'JetBrains Mono', monospace; font-size:.76rem; letter-spacing:.18em; text-transform:uppercase;
+.label { font-family:'JetBrains Mono', monospace !important; font-size:.76rem; letter-spacing:.18em; text-transform:uppercase;
   color:var(--cyan); margin:24px 0 9px; text-shadow:0 0 8px rgba(0,240,255,.7); }
 .label::before { content:"// "; color:var(--pink); }
 
@@ -79,16 +79,16 @@ div[data-testid="stTextInput"] input:focus { border-color:var(--cyan); box-shado
   color:var(--yellow); text-shadow:0 0 10px rgba(245,255,59,.7); }
 .claim { margin:0 0 16px; }
 .claim p { color:#f3efff; font-size:1.02rem; line-height:1.6; margin:0 0 8px; font-weight:500; }
-.cite { display:inline-block; font-family:'JetBrains Mono', monospace; font-size:.72rem; font-weight:600; color:#05010d;
+.cite { display:inline-block; font-family:'JetBrains Mono', monospace !important; font-size:.72rem; font-weight:600; color:#05010d;
   padding:1px 7px; margin-left:6px; vertical-align:2px; box-shadow:0 0 10px currentColor; }
 .quote { border-left:3px solid var(--cyan); background:rgba(0,240,255,.06); padding:9px 13px; color:#bfeaff; font-size:.92rem; line-height:1.5;
   box-shadow:inset 0 0 14px rgba(0,240,255,.08); }
-.quote .ok { font-family:'JetBrains Mono', monospace; color:#39ff88; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase;
+.quote .ok { font-family:'JetBrains Mono', monospace !important; color:#39ff88; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase;
   display:block; margin-bottom:4px; text-shadow:0 0 8px rgba(57,255,136,.8); }
 .quote i { color:#e8fbff; }
 
 .stats { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
-.stat { font-family:'JetBrains Mono', monospace; font-size:.74rem; color:#d6cff5; padding:5px 11px;
+.stat { font-family:'JetBrains Mono', monospace !important; font-size:.74rem; color:#d6cff5; padding:5px 11px;
   border:1px solid rgba(255,43,214,.5); background:rgba(255,43,214,.07); }
 .stat b { color:var(--pink); text-shadow:0 0 6px var(--pink); }
 
@@ -112,9 +112,9 @@ section[data-testid="stSidebar"] { background:linear-gradient(180deg,#0d0420,#05
 .paper:nth-child(3n) { border-left-color:var(--yellow); }
 .paper a { color:#e8e2ff !important; text-decoration:none; font-weight:600; }
 .paper a:hover { color:var(--cyan) !important; text-shadow:0 0 8px var(--cyan); }
-.paper span { color:#8a7fb5; font-family:'JetBrains Mono', monospace; font-size:.75rem; }
+.paper span { color:#8a7fb5; font-family:'JetBrains Mono', monospace !important; font-size:.75rem; }
 div[data-baseweb="slider"] div[role="slider"] { background:var(--pink) !important; box-shadow:0 0 12px var(--pink); }
-.foot { text-align:center; color:#7d6fa8; font-family:'JetBrains Mono', monospace; font-size:.76rem; letter-spacing:.06em; margin:40px 0 10px; }
+.foot { text-align:center; color:#7d6fa8; font-family:'JetBrains Mono', monospace !important; font-size:.76rem; letter-spacing:.06em; margin:40px 0 10px; }
 .foot a { color:var(--cyan); text-decoration:none; text-shadow:0 0 6px rgba(0,240,255,.6); }
 </style>
 """
