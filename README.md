@@ -1,5 +1,7 @@
 # Research Paper Assistant (RAG with verified citations)
 
+**Live demo:** https://kokkulajyothika-research-paper-rag-assistant-app-gzdu8i.streamlit.app/ (free hosting: if it has been asleep, click "wake up" and wait about a minute)
+
 A retrieval-augmented generation (RAG) app that answers questions about 15 influential AI research papers — Transformers, RAG, ReAct, Self-RAG, RAGAS and more — **with a citation to the paper and page for every claim**.
 
 Built around one idea: **an answer is only shown if it can be traced back to the source.** The model must quote the passage it used; Python code checks every quote against the source text and removes anything it cannot find. If the papers don't contain the answer, the app says so instead of guessing.
