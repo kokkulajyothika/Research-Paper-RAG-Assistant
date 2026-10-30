@@ -18,9 +18,9 @@ TAG_COLOURS = ["#00f0ff", "#ff2bd6", "#f5ff3b", "#39ff88", "#9d4dff", "#ff8a00",
 
 CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Rajdhani:wght@500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap');
 :root { --cyan:#00f0ff; --pink:#ff2bd6; --yellow:#f5ff3b; --violet:#9d4dff; --ink:#05010d; }
-html, body, [class*="css"], .stMarkdown, .stTextInput input, button { font-family:'Rajdhani', sans-serif !important; }
+html, body, [class*="css"], .stMarkdown, .stTextInput input, button { font-family:'Inter', sans-serif !important; }
 .stApp {
   background:
     linear-gradient(rgba(0,240,255,.05) 1px, transparent 1px) 0 0/44px 44px,
@@ -40,11 +40,11 @@ header[data-testid="stHeader"] { background:transparent; }
 .badge { display:inline-block; font-family:'JetBrains Mono', monospace; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase;
   color:var(--yellow); border:1px solid var(--yellow); padding:5px 12px; box-shadow:0 0 12px rgba(245,255,59,.35), inset 0 0 8px rgba(245,255,59,.15);
   clip-path:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px); }
-.hero h1 { font-family:'Orbitron', sans-serif !important; font-size:2.6rem; line-height:1.1; font-weight:900; margin:.7rem 0 .5rem;
+.hero h1 { font-family:'Space Grotesk', sans-serif !important; font-size:2.8rem; line-height:1.05; font-weight:700; margin:.7rem 0 .5rem;
   text-transform:uppercase; letter-spacing:.04em; color:#fff;
   text-shadow:0 0 6px var(--cyan), 0 0 18px var(--cyan), 0 0 38px rgba(0,240,255,.6), 3px 3px 0 var(--pink); }
 .hero h1 span { color:var(--pink); text-shadow:0 0 6px var(--pink), 0 0 20px var(--pink), 0 0 40px rgba(255,43,214,.6), -3px -2px 0 var(--cyan); }
-.hero p { color:#c9c3e6; font-size:1.12rem; line-height:1.55; margin:0; }
+.hero p { color:#c9c3e6; font-size:1.02rem; line-height:1.55; margin:0; }
 
 .pipeline { display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 6px; align-items:center; }
 .step { font-family:'JetBrains Mono', monospace; font-size:.76rem; color:#e9e4ff; padding:7px 12px;
@@ -58,7 +58,7 @@ header[data-testid="stHeader"] { background:transparent; }
 .label::before { content:"// "; color:var(--pink); }
 
 div[data-testid="stButton"] button {
-  width:100%; border-radius:0; padding:12px 14px; min-height:64px; font-size:1.02rem; font-weight:600;
+  width:100%; border-radius:0; padding:12px 14px; min-height:64px; font-size:.95rem; font-weight:600;
   background:linear-gradient(135deg, rgba(0,240,255,.07), rgba(255,43,214,.07));
   border:1px solid rgba(0,240,255,.45); color:#e8fbff; transition:all .15s ease;
   clip-path:polygon(12px 0,100% 0,100% calc(100% - 12px),calc(100% - 12px) 100%,0 100%,0 12px); }
@@ -75,13 +75,13 @@ div[data-testid="stTextInput"] input:focus { border-color:var(--cyan); box-shado
   background:linear-gradient(160deg, rgba(20,6,40,.92), rgba(5,1,13,.92));
   border:1px solid var(--cyan); box-shadow:0 0 22px rgba(0,240,255,.35), inset 0 0 30px rgba(157,77,255,.12);
   clip-path:polygon(18px 0,100% 0,100% calc(100% - 18px),calc(100% - 18px) 100%,0 100%,0 18px); }
-.card h3 { font-family:'Orbitron', sans-serif !important; margin:0 0 14px; font-size:1rem; letter-spacing:.12em; text-transform:uppercase;
+.card h3 { font-family:'Space Grotesk', sans-serif !important; margin:0 0 14px; font-size:1rem; letter-spacing:.12em; text-transform:uppercase;
   color:var(--yellow); text-shadow:0 0 10px rgba(245,255,59,.7); }
 .claim { margin:0 0 16px; }
-.claim p { color:#f3efff; font-size:1.12rem; line-height:1.6; margin:0 0 8px; font-weight:500; }
+.claim p { color:#f3efff; font-size:1.02rem; line-height:1.6; margin:0 0 8px; font-weight:500; }
 .cite { display:inline-block; font-family:'JetBrains Mono', monospace; font-size:.72rem; font-weight:600; color:#05010d;
   padding:1px 7px; margin-left:6px; vertical-align:2px; box-shadow:0 0 10px currentColor; }
-.quote { border-left:3px solid var(--cyan); background:rgba(0,240,255,.06); padding:9px 13px; color:#bfeaff; font-size:.98rem; line-height:1.5;
+.quote { border-left:3px solid var(--cyan); background:rgba(0,240,255,.06); padding:9px 13px; color:#bfeaff; font-size:.92rem; line-height:1.5;
   box-shadow:inset 0 0 14px rgba(0,240,255,.08); }
 .quote .ok { font-family:'JetBrains Mono', monospace; color:#39ff88; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase;
   display:block; margin-bottom:4px; text-shadow:0 0 8px rgba(57,255,136,.8); }
@@ -100,6 +100,8 @@ div[data-testid="stTextInput"] input:focus { border-color:var(--cyan); box-shado
 div[data-testid="stExpander"] { border-radius:0 !important; border:1px solid rgba(157,77,255,.45) !important;
   background:rgba(12,4,26,.75); margin-bottom:8px; }
 div[data-testid="stExpander"] summary { font-weight:600; }
+h1, h2, h3, .card h3 { font-family:'Space Grotesk', sans-serif !important; }
+code, pre, .stCaption code { font-family:'JetBrains Mono', monospace !important; }
 div[data-testid="stExpander"] summary:hover { color:var(--cyan); text-shadow:0 0 8px rgba(0,240,255,.6); }
 
 section[data-testid="stSidebar"] { background:linear-gradient(180deg,#0d0420,#05010d); border-right:1px solid rgba(255,43,214,.4);
