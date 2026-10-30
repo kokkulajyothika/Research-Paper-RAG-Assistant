@@ -115,6 +115,16 @@ def test_answer_question_handles_llm_failure():
     assert isinstance(ans, Answer) and "429" in ans.error
 
 
+def test_quote_matching_handles_pdf_quirks():
+    pdf = "This yields a signi\ufb01cant improvement because self- attention connects all positions."
+    assert quote_in_source("yields a significant improvement because self-attention", pdf)
+    # one word dropped by PDF extraction is tolerated in a long quote
+    long_src = "the number of operations required to relate signals from two arbitrary positions grows linearly"
+    assert quote_in_source("number of operations required to relate the signals from two arbitrary positions grows", long_src)
+    # a different statement is still rejected
+    assert not quote_in_source("the number of operations grows exponentially with distance always", long_src)
+
+
 # ---------- metrics ----------
 def test_metrics():
     assert recall_at_k(["a", "b", "c"], "b", 1) == 0.0 and recall_at_k(["a", "b"], "b", 2) == 1.0

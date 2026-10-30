@@ -9,6 +9,8 @@ from __future__ import annotations
 import json
 import os
 import re
+import unicodedata
+from difflib import SequenceMatcher
 from dataclasses import dataclass, field
 
 import requests
@@ -70,17 +72,37 @@ class Answer:
 
 
 def normalise(text: str) -> str:
-    text = text.lower().replace("’", "'").replace("“", '"').replace("”", '"')
-    text = re.sub(r"[^a-z0-9%.,'\- ]+", " ", text)
+    """Lower-case and simplify text so PDF quirks don't break matching.
+
+    NFKC turns PDF ligatures like the single character 'ﬁ' into 'fi'; hyphens and dashes become
+    spaces so 'self-attention', 'self- attention' and 'self attention' all match.
+    """
+    text = unicodedata.normalize("NFKC", text).lower()
+    text = text.replace("\u2019", "'").replace("\u2018", "'")
+    text = re.sub(r"[-\u2010-\u2015]", " ", text)
+    text = re.sub(r"[^a-z0-9%' ]+", " ", text)
     return re.sub(r"\s+", " ", text).strip()
 
 
-def quote_in_source(quote: str, source_text: str, min_words: int = 4) -> bool:
-    """True if the quote appears in the source after normalising spacing, case and punctuation."""
-    q = normalise(quote)
-    if len(q.split()) < min_words:
+def quote_in_source(quote: str, source_text: str, min_words: int = 4, min_ratio: float = 0.9) -> bool:
+    """True if the quote appears in the source.
+
+    First an exact match after normalising; if that fails, a near-exact match: some window of the
+    source with the same number of words must agree with the quote word-for-word at least 90%
+    (allows a missed word from PDF extraction, never a different sentence).
+    """
+    q = normalise(quote).split()
+    if len(q) < min_words:
         return False
-    return q in normalise(source_text)
+    src = normalise(source_text).split()
+    if " ".join(q) in " ".join(src):
+        return True
+    n = len(q)
+    for start in range(0, max(1, len(src) - n + 1)):
+        window = src[start:start + n + 1]
+        if SequenceMatcher(None, q, window, autojunk=False).ratio() >= min_ratio:
+            return True
+    return False
 
 
 def build_user_prompt(question: str, sources: list[str]) -> str:

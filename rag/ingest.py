@@ -16,7 +16,7 @@ import requests
 from pypdf import PdfReader
 
 ARXIV_PDF = "https://arxiv.org/pdf/{id}"
-ARXIV_API = "http://export.arxiv.org/api/query?id_list={ids}"
+ARXIV_API = "https://export.arxiv.org/api/query?id_list={ids}&max_results=100"
 HEADERS = {"User-Agent": "research-paper-rag/1.0 (portfolio project)"}
 
 

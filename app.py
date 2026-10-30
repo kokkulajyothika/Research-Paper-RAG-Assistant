@@ -16,7 +16,7 @@ st.set_page_config(page_title="Research Paper Assistant", page_icon="📚", layo
 @st.cache_resource(show_spinner="Loading PyTorch models and building the index (first run takes a few minutes)…")
 def setup():
     encoder, reranker = load_models()
-    chunks, matrix = get_index(encoder, log=lambda m: None)
+    chunks, matrix = get_index(encoder, log=print)
     return encoder, reranker, chunks, matrix
 
 
@@ -68,6 +68,10 @@ if question:
             st.error(ans.error)
         elif not ans.answerable:
             st.warning("The retrieved passages don't contain a clear answer, so I won't guess.")
+            if ans.removed:
+                with st.expander(f"⚠️ {len(ans.removed)} claim(s) removed because the quote was not found in the source"):
+                    for c in ans.removed:
+                        st.markdown(f"- {c.text} (cited [{c.source}]: “{c.quote}”)")
         else:
             st.subheader("Answer")
             for c in ans.claims:
