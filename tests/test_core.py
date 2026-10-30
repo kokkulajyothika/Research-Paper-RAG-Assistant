@@ -136,6 +136,22 @@ def test_answer_question_retries_when_quote_not_exact():
     assert ans.answerable and len(ans.claims) == 1 and not ans.removed
 
 
+def test_call_groq_falls_back_to_json_mode_on_400(monkeypatch):
+    import rag.answer as ra
+    seen = []
+    class Resp:
+        def __init__(self, code, content=""):
+            self.status_code, self.text, self.headers, self._c = code, "json_validate_failed", {}, content
+        def json(self):
+            return {"choices": [{"message": {"content": self._c}}]}
+    def fake_post(url, headers, json, timeout):
+        seen.append(json["response_format"]["type"])
+        return Resp(400) if len(seen) == 1 else Resp(200, '```json\n{"answerable": false, "claims": []}\n```')
+    monkeypatch.setattr(ra.requests, "post", fake_post)
+    out = ra.call_groq("q", SOURCES, "key")
+    assert seen == ["json_schema", "json_object"] and json.loads(out)["answerable"] is False
+
+
 # ---------- metrics ----------
 def test_metrics():
     assert recall_at_k(["a", "b", "c"], "b", 1) == 0.0 and recall_at_k(["a", "b"], "b", 2) == 1.0

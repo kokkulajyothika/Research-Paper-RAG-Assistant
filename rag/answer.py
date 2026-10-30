@@ -124,31 +124,52 @@ def parse_and_verify(raw_json: str, sources: list[str]) -> Answer:
     return answer
 
 
+def _post(body: dict, api_key: str, timeout: int) -> requests.Response:
+    """POST to Groq, waiting and retrying when rate-limited (429) or the server is busy (5xx)."""
+    for attempt in range(4):
+        r = requests.post(GROQ_URL, headers={"Authorization": f"Bearer {api_key}"}, json=body, timeout=timeout)
+        if (r.status_code == 429 or r.status_code >= 500) and attempt < 3:
+            try:
+                wait = float(r.headers.get("retry-after", 0))
+            except ValueError:
+                wait = 0
+            time.sleep(min(max(wait, 2 ** attempt * 2), 30))
+            continue
+        return r
+    return r
+
+
+def _strip_fences(text: str) -> str:
+    text = text.strip()
+    if text.startswith("```"):
+        text = re.sub(r"^```[a-zA-Z]*\s*|\s*```$", "", text)
+    return text
+
+
 def call_groq(question: str, sources: list[str], api_key: str, model: str = DEFAULT_MODEL,
               timeout: int = 60) -> str:
-    body = {
+    """Ask for strict JSON-schema output; if Groq rejects the model's output (HTTP 400), fall back to JSON mode.
+    Either way the claims are verified in code afterwards, so the looser mode cannot sneak in unsupported quotes."""
+    base = {
         "model": model,
         "temperature": 0,
         "messages": [
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": build_user_prompt(question, sources)},
         ],
-        "response_format": {"type": "json_schema", "json_schema": {"name": "cited_answer", "strict": True, "schema": SCHEMA}},
     }
-    for attempt in range(4):  # wait and retry when rate-limited (429) or the server is busy (5xx)
-        r = requests.post(GROQ_URL, headers={"Authorization": f"Bearer {api_key}"}, json=body, timeout=timeout)
-        if r.status_code == 429 or r.status_code >= 500:
-            if attempt < 3:
-                try:
-                    wait = float(r.headers.get("retry-after", 0))
-                except ValueError:
-                    wait = 0
-                time.sleep(min(max(wait, 2 ** attempt * 2), 30))
-                continue
-        r.raise_for_status()
-        return r.json()["choices"][0]["message"]["content"]
-    r.raise_for_status()
-    return r.json()["choices"][0]["message"]["content"]
+    formats = [{"type": "json_schema", "json_schema": {"name": "cited_answer", "strict": True, "schema": SCHEMA}},
+               {"type": "json_object"}]
+    last = None
+    for fmt in formats:
+        r = _post({**base, "response_format": fmt}, api_key, timeout)
+        if r.status_code == 400:
+            last = r
+            continue
+        if r.status_code >= 400:
+            raise RuntimeError(f"Groq {r.status_code}: {r.text[:200]}")
+        return _strip_fences(r.json()["choices"][0]["message"]["content"])
+    raise RuntimeError(f"Groq 400: {last.text[:200] if last is not None else 'bad request'}")
 
 
 def answer_question(question: str, sources: list[str], api_key: str | None, model: str = DEFAULT_MODEL,

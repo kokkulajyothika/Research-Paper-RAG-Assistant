@@ -50,7 +50,7 @@ Results are written to `eval/results.md` (the evaluation downloads the papers an
 
 ## Tests
 
-`pytest -q` runs 15 unit tests that need no downloads: chunking, cosine search, reranking order, the refusal threshold, quote verification (including wrong source numbers and fabricated quotes), error handling and the evaluation metrics. Small fake models stand in for the neural networks.
+`pytest -q` runs 16 unit tests that need no downloads: chunking, cosine search, reranking order, the refusal threshold, quote verification (including wrong source numbers and fabricated quotes), error handling and the evaluation metrics. Small fake models stand in for the neural networks.
 
 ## Run it locally
 
