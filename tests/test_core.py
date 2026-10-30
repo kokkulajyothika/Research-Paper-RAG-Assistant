@@ -125,6 +125,17 @@ def test_quote_matching_handles_pdf_quirks():
     assert not quote_in_source("the number of operations grows exponentially with distance always", long_src)
 
 
+def test_answer_question_retries_when_quote_not_exact():
+    calls = []
+    def llm(q, *a):
+        calls.append(q)
+        quote = "relies on an attention mechanism to draw dependencies" if len(calls) == 1 else "relies entirely on an attention mechanism"
+        return json.dumps({"answerable": True, "claims": [{"text": "Uses attention.", "source": 1, "quote": quote}]})
+    ans = answer_question("q", SOURCES, "key", llm=llm)
+    assert len(calls) == 2 and "NOT found word-for-word" in calls[1]
+    assert ans.answerable and len(ans.claims) == 1 and not ans.removed
+
+
 # ---------- metrics ----------
 def test_metrics():
     assert recall_at_k(["a", "b", "c"], "b", 1) == 0.0 and recall_at_k(["a", "b"], "b", 2) == 1.0

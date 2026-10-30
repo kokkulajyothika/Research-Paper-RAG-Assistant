@@ -21,7 +21,7 @@ DEFAULT_MODEL = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 SYSTEM_PROMPT = """You answer questions about AI research papers using ONLY the numbered sources provided.
 Rules:
 - Use only facts stated in the sources. Do not use outside knowledge.
-- Every claim must cite one source number and include a short EXACT quote (5-25 words) copied from that source.
+- Every claim must cite one source number and include an EXACT quote (6-25 words): a continuous span copied character-for-character from that source. Never shorten, merge or reword a quote.
 - If the sources do not contain the answer, set "answerable" to false and leave "claims" empty.
 - Write in clear, plain English.
 Return JSON only, in this shape:
@@ -140,10 +140,21 @@ def call_groq(question: str, sources: list[str], api_key: str, model: str = DEFA
 
 
 def answer_question(question: str, sources: list[str], api_key: str | None, model: str = DEFAULT_MODEL,
-                    llm=call_groq) -> Answer:
+                    llm=call_groq, retries: int = 1) -> Answer:
+    """Ask the LLM, verify its quotes, and if any quote was not exact, retry once with feedback."""
     if not api_key:
         return Answer(False, error="No GROQ_API_KEY set. Add it as a secret to generate answers.")
     try:
-        return parse_and_verify(llm(question, sources, api_key, model), sources)
+        best = parse_and_verify(llm(question, sources, api_key, model), sources)
+        for _ in range(retries):
+            if not best.removed:
+                break
+            bad = "\n".join(f'- [{c.source}] "{c.quote}"' for c in best.removed)
+            retry_q = (f"{question}\n\nNOTE: in a previous attempt these quotes were NOT found word-for-word in the "
+                       f"cited source:\n{bad}\nCopy every quote exactly as a continuous span from the source text.")
+            again = parse_and_verify(llm(retry_q, sources, api_key, model), sources)
+            if len(again.claims) > len(best.claims) or (len(again.claims) == len(best.claims) and len(again.removed) < len(best.removed)):
+                best = again
+        return best
     except Exception as e:  # network, rate limit or bad JSON
         return Answer(False, error=f"Answer generation failed: {str(e)[:200]}")
