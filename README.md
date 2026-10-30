@@ -6,6 +6,12 @@ A retrieval-augmented generation (RAG) app that answers questions about 15 influ
 
 Built around one idea: **an answer is only shown if it can be traced back to the source.** The model must quote the passage it used; Python code checks every quote against the source text and removes anything it cannot find. If the papers don't contain the answer, the app says so instead of guessing.
 
+## Screenshots
+
+| Home | Answer with verified quote |
+|---|---|
+| ![Home screen](docs/screenshots/home.jpg) | ![Answer with a verified citation](docs/screenshots/answer.jpg) |
+
 ## How it works
 
 ```mermaid
@@ -28,6 +34,7 @@ flowchart LR
 | **Cross-encoder reranker** (PyTorch) | Reads question and passage together and re-scores the 25 candidates | More accurate ranking than embeddings alone |
 | **Refusal guard** | If the best reranker score is below a threshold, no answer is generated | Stops the model answering off-topic questions from its own memory |
 | **Cited generation** (Groq, strict JSON schema) | Each claim must name a source number and copy an exact quote | Makes every claim checkable |
+| **Retry with feedback** | If a quote is not found word-for-word, the model is asked once more, told exactly which quotes failed | Recovers answers when the model paraphrases instead of quoting |
 | **Quote verification** (Python) | Normalises case, spacing and punctuation, then checks the quote is in the cited passage | Unsupported claims are removed and shown to the user |
 
 ## Evaluation
