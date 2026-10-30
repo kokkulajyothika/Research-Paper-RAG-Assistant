@@ -227,6 +227,13 @@ st.markdown("""
 encoder, reranker, chunks, matrix = setup()
 texts = [c.text for c in chunks]
 
+# TEMPORARY: one-off benchmark run on the deployed models (removed after the results are recorded)
+if st.query_params.get("run_eval_7f3k") == "1":
+    from eval.evaluate import run_evaluation
+    with st.spinner("Running evaluation…"):
+        st.code(run_evaluation(encoder, reranker, chunks, matrix, get_api_key(), answers=True), language="markdown")
+    st.stop()
+
 examples = ["What problem does self-attention solve compared with recurrent networks?",
             "How does Self-RAG decide when to retrieve?",
             "What does 'lost in the middle' mean for long contexts?",
