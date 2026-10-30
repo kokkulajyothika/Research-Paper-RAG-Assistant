@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 import os
 import re
+import time
 import unicodedata
 from difflib import SequenceMatcher
 from dataclasses import dataclass, field
@@ -134,7 +135,18 @@ def call_groq(question: str, sources: list[str], api_key: str, model: str = DEFA
         ],
         "response_format": {"type": "json_schema", "json_schema": {"name": "cited_answer", "strict": True, "schema": SCHEMA}},
     }
-    r = requests.post(GROQ_URL, headers={"Authorization": f"Bearer {api_key}"}, json=body, timeout=timeout)
+    for attempt in range(4):  # wait and retry when rate-limited (429) or the server is busy (5xx)
+        r = requests.post(GROQ_URL, headers={"Authorization": f"Bearer {api_key}"}, json=body, timeout=timeout)
+        if r.status_code == 429 or r.status_code >= 500:
+            if attempt < 3:
+                try:
+                    wait = float(r.headers.get("retry-after", 0))
+                except ValueError:
+                    wait = 0
+                time.sleep(min(max(wait, 2 ** attempt * 2), 30))
+                continue
+        r.raise_for_status()
+        return r.json()["choices"][0]["message"]["content"]
     r.raise_for_status()
     return r.json()["choices"][0]["message"]["content"]
 

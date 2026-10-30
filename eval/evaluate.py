@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import time
 from pathlib import Path
 
 from rag.answer import answer_question
@@ -20,7 +21,8 @@ from .metrics import summarise
 HERE = Path(__file__).resolve().parent
 
 
-def run_evaluation(encoder, reranker, chunks, matrix, api_key: str | None = None, answers: bool = False) -> str:
+def run_evaluation(encoder, reranker, chunks, matrix, api_key: str | None = None, answers: bool = False,
+                   pause: float = 3.0) -> str:
     """Run the benchmark with already-loaded models and return the results as Markdown."""
     texts = [c.text for c in chunks]
     questions = [json.loads(l) for l in (HERE / "questions.jsonl").read_text().splitlines() if l.strip()]
@@ -37,6 +39,7 @@ def run_evaluation(encoder, reranker, chunks, matrix, api_key: str | None = None
                             "pred_answerable": is_answerable(hits)})
         if answers and q["answerable"] and is_answerable(hits):
             verify.append(answer_question(q["q"], [texts[h.chunk_index] for h in hits[:5]], api_key))
+            time.sleep(pause)  # stay under the free-tier rate limit
 
     dense, rer = summarise(rows_dense), summarise(rows_rerank)
     n_ans = sum(q["answerable"] for q in questions)
@@ -54,6 +57,9 @@ def run_evaluation(encoder, reranker, chunks, matrix, api_key: str | None = None
         lines += ["", f"Answers: {answered}/{len(verify)} answerable questions got a verified answer. "
                       f"Citation check: {ok}/{claims} final claims had quotes found in the cited source"
                       f" ({(ok / claims * 100 if claims else 0):.0f}%). Answer errors: {errors}."]
+        first_err = next((a.error for a in verify if a.error), None)
+        if first_err:
+            lines.append(f"First error: {first_err}")
     return "\n".join(lines) + "\n"
 
 
