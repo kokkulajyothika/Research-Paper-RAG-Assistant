@@ -114,11 +114,18 @@ section[data-testid="stSidebar"] { background:linear-gradient(180deg,#0d0420,#05
 .paper a:hover { color:var(--cyan) !important; text-shadow:0 0 8px var(--cyan); }
 .paper span { color:#8a7fb5; font-family:'JetBrains Mono', monospace !important; font-size:.75rem; }
 div[data-baseweb="slider"] div[role="slider"] { background:var(--pink) !important; box-shadow:0 0 12px var(--pink); }
-section[data-testid="stSidebar"] div[data-testid="stButton"] button { min-height:0; padding:8px 12px; font-size:.9rem;
-  clip-path:none; border:none; border-left:2px solid var(--cyan); background:rgba(0,240,255,.04); text-align:left; justify-content:flex-start; }
-section[data-testid="stSidebar"] div[data-testid="stButton"]:nth-of-type(3n+2) button { border-left-color:var(--pink); }
-section[data-testid="stSidebar"] div[data-testid="stButton"] button:hover { background:rgba(255,43,214,.10); box-shadow:none; }
-section[data-testid="stSidebar"] div[data-testid="stButton"] button p { text-align:left; }
+section[data-testid="stSidebar"] div[data-testid="stButton"] { margin-bottom:-6px; }
+section[data-testid="stSidebar"] div[data-testid="stButton"] button { min-height:0; padding:9px 12px; clip-path:none; border:none;
+  border-left:2px solid rgba(0,240,255,.55); background:rgba(0,240,255,.035); justify-content:flex-start !important; text-align:left; }
+section[data-testid="stSidebar"] div[data-testid="stButton"] button:hover { border-left-color:var(--pink); background:rgba(255,43,214,.10);
+  box-shadow:none; text-shadow:none; transform:none; }
+section[data-testid="stSidebar"] div[data-testid="stButton"] button > div,
+section[data-testid="stSidebar"] div[data-testid="stButton"] button div[data-testid="stMarkdownContainer"] { width:100%; }
+section[data-testid="stSidebar"] div[data-testid="stButton"] button p { display:grid; grid-template-columns:1fr auto; column-gap:12px;
+  align-items:baseline; width:100%; margin:0; text-align:left !important; font-size:.88rem; font-weight:500; line-height:1.35; color:#e8e2ff; }
+section[data-testid="stSidebar"] div[data-testid="stButton"] button p code { font-family:'JetBrains Mono', monospace !important;
+  font-size:.72rem; color:#8a7fb5; background:transparent; padding:0; border:none; }
+section[data-testid="stSidebar"] div[data-testid="stButton"] button:hover p code { color:var(--pink); }
 div[data-testid="stExpander"] div[data-testid="stButton"] button, div[data-testid="stLinkButton"] a { min-height:0; padding:9px 14px; font-size:.88rem; }
 div[data-testid="stLinkButton"] a { border-radius:0; background:linear-gradient(135deg, rgba(255,43,214,.18), rgba(157,77,255,.18));
   border:1px solid var(--pink); color:#fff !important; font-weight:600; box-shadow:0 0 14px rgba(255,43,214,.35);
@@ -193,7 +200,7 @@ def show_paper(pid: str, page: int | None = None):
 with st.sidebar:
     st.markdown("<div class='label' style='margin-top:4px'>Papers in the index</div>", unsafe_allow_html=True)
     for p in PAPERS:
-        if st.button(f"{p['short']}  ·  {p['year']}", key=f"paper-{p['id']}", use_container_width=True):
+        if st.button(f"{p['short']} `{p['year']}`", key=f"paper-{p['id']}", use_container_width=True):
             show_paper(p["id"])
     st.markdown("<div class='label'>Settings</div>", unsafe_allow_html=True)
     final_k = st.slider("Passages given to the model", 3, 8, 5)
