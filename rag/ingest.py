@@ -75,6 +75,27 @@ def fetch_titles(ids: list[str]) -> dict[str, str]:
         return {}
 
 
+def fetch_metadata(ids: list[str]) -> dict[str, dict]:
+    """Title, authors, abstract and date for each paper from the arXiv API (shown in the app's paper panel)."""
+    try:
+        r = requests.get(ARXIV_API.format(ids=",".join(ids)), headers=HEADERS, timeout=30)
+        r.raise_for_status()
+        ns = {"a": "http://www.w3.org/2005/Atom"}
+        out = {}
+        for e in ET.fromstring(r.text).findall("a:entry", ns):
+            raw_id = re.sub(r"v\d+$", "", e.findtext("a:id", default="", namespaces=ns).rsplit("/", 1)[-1])
+            tidy = lambda t: re.sub(r"\s+", " ", t or "").strip()
+            out[raw_id] = {
+                "title": tidy(e.findtext("a:title", namespaces=ns)),
+                "summary": tidy(e.findtext("a:summary", namespaces=ns)),
+                "published": tidy(e.findtext("a:published", namespaces=ns))[:10],
+                "authors": [tidy(a.findtext("a:name", namespaces=ns)) for a in e.findall("a:author", ns)],
+            }
+        return out
+    except Exception:
+        return {}
+
+
 def pages_from_pdf(data: bytes) -> list[str]:
     reader = PdfReader(io.BytesIO(data))
     return [clean_text(p.extract_text() or "") for p in reader.pages]

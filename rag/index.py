@@ -6,7 +6,7 @@ from pathlib import Path
 
 import numpy as np
 
-from .ingest import build_chunks, load_chunks, save_chunks
+from .ingest import build_chunks, fetch_metadata, load_chunks, save_chunks
 from .retrieve import embed_texts
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -32,3 +32,15 @@ def get_index(encoder, log=print):
     save_chunks(chunks, chunks_path)
     np.save(matrix_path, matrix)
     return chunks, matrix
+
+
+def get_metadata() -> dict[str, dict]:
+    """Paper details for the app (cached in ./data/meta.json after the first successful fetch)."""
+    path = DATA / "meta.json"
+    if path.exists():
+        return json.loads(path.read_text(encoding="utf-8"))
+    meta = fetch_metadata([p["id"] for p in load_papers()])
+    if meta:
+        DATA.mkdir(exist_ok=True)
+        path.write_text(json.dumps(meta), encoding="utf-8")
+    return meta

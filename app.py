@@ -8,7 +8,7 @@ import time
 import streamlit as st
 
 from rag.answer import DEFAULT_MODEL, answer_question
-from rag.index import get_index, load_papers
+from rag.index import get_index, get_metadata, load_papers
 from rag.retrieve import is_answerable, load_models, retrieve
 
 st.set_page_config(page_title="Research Paper Assistant", page_icon="📚", layout="centered")
@@ -114,6 +114,26 @@ section[data-testid="stSidebar"] { background:linear-gradient(180deg,#0d0420,#05
 .paper a:hover { color:var(--cyan) !important; text-shadow:0 0 8px var(--cyan); }
 .paper span { color:#8a7fb5; font-family:'JetBrains Mono', monospace !important; font-size:.75rem; }
 div[data-baseweb="slider"] div[role="slider"] { background:var(--pink) !important; box-shadow:0 0 12px var(--pink); }
+section[data-testid="stSidebar"] div[data-testid="stButton"] button { min-height:0; padding:8px 12px; font-size:.9rem;
+  clip-path:none; border:none; border-left:2px solid var(--cyan); background:rgba(0,240,255,.04); text-align:left; justify-content:flex-start; }
+section[data-testid="stSidebar"] div[data-testid="stButton"]:nth-of-type(3n+2) button { border-left-color:var(--pink); }
+section[data-testid="stSidebar"] div[data-testid="stButton"] button:hover { background:rgba(255,43,214,.10); box-shadow:none; }
+section[data-testid="stSidebar"] div[data-testid="stButton"] button p { text-align:left; }
+div[data-testid="stExpander"] div[data-testid="stButton"] button, div[data-testid="stLinkButton"] a { min-height:0; padding:9px 14px; font-size:.88rem; }
+div[data-testid="stLinkButton"] a { border-radius:0; background:linear-gradient(135deg, rgba(255,43,214,.18), rgba(157,77,255,.18));
+  border:1px solid var(--pink); color:#fff !important; font-weight:600; box-shadow:0 0 14px rgba(255,43,214,.35);
+  clip-path:polygon(10px 0,100% 0,100% calc(100% - 10px),calc(100% - 10px) 100%,0 100%,0 10px); }
+div[data-testid="stLinkButton"] a:hover { border-color:var(--cyan); box-shadow:0 0 20px rgba(0,240,255,.5); }
+div[role="dialog"] { background:linear-gradient(160deg,#160630,#07020f) !important; border:1px solid var(--cyan) !important;
+  border-radius:0 !important; box-shadow:0 0 40px rgba(0,240,255,.35), 0 0 80px rgba(255,43,214,.15) !important; }
+.pp h2 { font-family:'Space Grotesk', sans-serif !important; font-size:1.7rem; line-height:1.2; margin:.5rem 0 .4rem; color:#fff;
+  text-shadow:0 0 14px rgba(0,240,255,.45); }
+.pp-tag { font-family:'JetBrains Mono', monospace !important; font-size:.72rem; letter-spacing:.1em; color:var(--yellow);
+  border:1px solid var(--yellow); padding:3px 9px; }
+.pp-auth { color:#b8acdf; font-size:.92rem; margin-bottom:6px; }
+.pp-h { font-family:'JetBrains Mono', monospace !important; color:var(--cyan); font-size:.74rem; letter-spacing:.16em;
+  text-transform:uppercase; margin:16px 0 6px; }
+.pp-abs { color:#e3dcff; line-height:1.65; font-size:.97rem; }
 .foot { text-align:center; color:#7d6fa8; font-family:'JetBrains Mono', monospace !important; font-size:.76rem; letter-spacing:.06em; margin:40px 0 10px; }
 .foot a { color:var(--cyan); text-decoration:none; text-shadow:0 0 6px rgba(0,240,255,.6); }
 </style>
@@ -143,12 +163,38 @@ def colour(i: int) -> str:
     return TAG_COLOURS[(i - 1) % len(TAG_COLOURS)]
 
 
+# ---------- paper panel ----------
+PAPERS = load_papers()
+BY_ID = {p["id"]: p for p in PAPERS}
+
+
+@st.cache_data(show_spinner=False)
+def paper_meta() -> dict:
+    return get_metadata()
+
+
+@st.dialog("Paper details", width="large")
+def show_paper(pid: str, page: int | None = None):
+    p, m = BY_ID[pid], paper_meta().get(pid, {})
+    authors = m.get("authors", [])
+    who = ", ".join(authors[:6]) + (f" and {len(authors) - 6} more" if len(authors) > 6 else "")
+    st.markdown(
+        f"<div class='pp'><span class='pp-tag'>arXiv {esc(pid)} · {esc(m.get('published') or p['year'])}</span>"
+        f"<h2>{esc(m.get('title') or p['short'])}</h2>"
+        + (f"<div class='pp-auth'>{esc(who)}</div>" if who else "")
+        + (f"<div class='pp-h'>// Abstract</div><p class='pp-abs'>{esc(m['summary'])}</p>" if m.get("summary") else
+           "<p class='pp-abs'>Details are unavailable right now; you can still open the PDF.</p>")
+        + "</div>", unsafe_allow_html=True)
+    url = f"https://arxiv.org/pdf/{pid}" + (f"#page={page}" if page else "")
+    st.link_button(f"Read the PDF{f' at page {page}' if page else ''} ↗", url, use_container_width=True)
+
+
 # ---------- sidebar ----------
 with st.sidebar:
     st.markdown("<div class='label' style='margin-top:4px'>Papers in the index</div>", unsafe_allow_html=True)
-    st.markdown("".join(
-        f"<div class='paper'><a href='https://arxiv.org/abs/{esc(p['id'])}' target='_blank'>{esc(p['short'])}</a>"
-        f"<span>{esc(p['year'])}</span></div>" for p in load_papers()), unsafe_allow_html=True)
+    for p in PAPERS:
+        if st.button(f"{p['short']}  ·  {p['year']}", key=f"paper-{p['id']}", use_container_width=True):
+            show_paper(p["id"])
     st.markdown("<div class='label'>Settings</div>", unsafe_allow_html=True)
     final_k = st.slider("Passages given to the model", 3, 8, 5)
     show_scores = st.toggle("Show retrieval scores", value=False)
@@ -234,7 +280,11 @@ if question:
         with st.expander(label):
             st.markdown(f"<div style='border-left:3px solid {colour(i)};padding-left:12px;color:#cbd5e1;line-height:1.6'>"
                         f"{esc(ch.text)}</div>", unsafe_allow_html=True)
-            st.markdown(f"[Open paper on arXiv ↗](https://arxiv.org/abs/{ch.paper_id})")
+            c1, c2 = st.columns(2)
+            c1.link_button(f"Open PDF at page {ch.page} ↗", f"https://arxiv.org/pdf/{ch.paper_id}#page={ch.page}",
+                           use_container_width=True)
+            if c2.button("About this paper", key=f"about-{i}", use_container_width=True):
+                show_paper(ch.paper_id, ch.page)
 
 st.markdown("<div class='foot'>Built by <a href='https://www.linkedin.com/in/jyothikakokkula' target='_blank'>Jyothika Kokkula</a> · "
             "<a href='https://github.com/kokkulajyothika/Research-Paper-RAG-Assistant' target='_blank'>Source on GitHub</a></div>",
