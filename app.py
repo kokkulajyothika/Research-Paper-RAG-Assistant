@@ -151,7 +151,7 @@ texts = [c.text for c in chunks]
 examples = ["What problem does self-attention solve compared with recurrent networks?",
             "How does Self-RAG decide when to retrieve?",
             "What does 'lost in the middle' mean for long contexts?",
-            "What metrics does RAGAS use to evaluate RAG systems?"]
+            "How does ReAct combine reasoning and acting?"]
 icons = ["⚡", "🔁", "🧭", "📏"]
 
 st.markdown("<div class='label'>Try an example</div>", unsafe_allow_html=True)
@@ -162,7 +162,7 @@ for col, ex, ic in zip([*row1, *row2], examples, icons):
 
 st.markdown("<div class='label'>Or ask your own</div>", unsafe_allow_html=True)
 question = st.text_input("Your question", key="q", label_visibility="collapsed",
-                         placeholder="e.g. How does ReAct combine reasoning and acting?")
+                         placeholder="e.g. What is dense passage retrieval?")
 
 if question:
     t0 = time.time()
