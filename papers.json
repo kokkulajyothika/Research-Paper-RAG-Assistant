@@ -1,0 +1,17 @@
+[
+  {"id": "1706.03762", "short": "Attention Is All You Need", "year": 2017},
+  {"id": "1908.10084", "short": "Sentence-BERT", "year": 2019},
+  {"id": "2004.04906", "short": "Dense Passage Retrieval (DPR)", "year": 2020},
+  {"id": "2004.12832", "short": "ColBERT", "year": 2020},
+  {"id": "2005.11401", "short": "Retrieval-Augmented Generation (RAG)", "year": 2020},
+  {"id": "2201.11903", "short": "Chain-of-Thought Prompting", "year": 2022},
+  {"id": "2203.02155", "short": "InstructGPT (RLHF)", "year": 2022},
+  {"id": "2210.03629", "short": "ReAct", "year": 2022},
+  {"id": "2212.10496", "short": "HyDE", "year": 2022},
+  {"id": "2302.04761", "short": "Toolformer", "year": 2023},
+  {"id": "2307.03172", "short": "Lost in the Middle", "year": 2023},
+  {"id": "2309.15217", "short": "RAGAS", "year": 2023},
+  {"id": "2310.11511", "short": "Self-RAG", "year": 2023},
+  {"id": "2311.05232", "short": "Hallucination in LLMs (Survey)", "year": 2023},
+  {"id": "2312.10997", "short": "RAG for LLMs (Survey)", "year": 2023}
+]

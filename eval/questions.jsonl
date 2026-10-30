@@ -1,0 +1,20 @@
+{"q": "Why did the Transformer replace recurrence with attention?", "paper": "1706.03762", "answerable": true}
+{"q": "What is multi-head attention?", "paper": "1706.03762", "answerable": true}
+{"q": "How does Sentence-BERT produce sentence embeddings efficiently?", "paper": "1908.10084", "answerable": true}
+{"q": "How does dense passage retrieval train its question and passage encoders?", "paper": "2004.04906", "answerable": true}
+{"q": "What is late interaction in ColBERT?", "paper": "2004.12832", "answerable": true}
+{"q": "What are RAG-Sequence and RAG-Token?", "paper": "2005.11401", "answerable": true}
+{"q": "What non-parametric memory does the original RAG model use?", "paper": "2005.11401", "answerable": true}
+{"q": "What is chain-of-thought prompting?", "paper": "2201.11903", "answerable": true}
+{"q": "How was InstructGPT fine-tuned with human feedback?", "paper": "2203.02155", "answerable": true}
+{"q": "How does ReAct interleave reasoning traces and actions?", "paper": "2210.03629", "answerable": true}
+{"q": "What is a hypothetical document embedding?", "paper": "2212.10496", "answerable": true}
+{"q": "How does Toolformer learn to use APIs in a self-supervised way?", "paper": "2302.04761", "answerable": true}
+{"q": "Where in a long context do language models use information best?", "paper": "2307.03172", "answerable": true}
+{"q": "Which metrics does RAGAS propose for evaluating retrieval augmented generation?", "paper": "2309.15217", "answerable": true}
+{"q": "What are reflection tokens in Self-RAG?", "paper": "2310.11511", "answerable": true}
+{"q": "How is hallucination in large language models categorised?", "paper": "2311.05232", "answerable": true}
+{"q": "What are the differences between naive, advanced and modular RAG?", "paper": "2312.10997", "answerable": true}
+{"q": "What is the capital of Australia?", "paper": null, "answerable": false}
+{"q": "How do I bake sourdough bread?", "paper": null, "answerable": false}
+{"q": "Who won the 2022 football World Cup?", "paper": null, "answerable": false}
