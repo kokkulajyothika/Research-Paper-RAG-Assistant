@@ -119,7 +119,8 @@ section[data-testid="stSidebar"] div[data-testid="stButton"] button { min-height
   border-left:2px solid rgba(0,240,255,.55); background:rgba(0,240,255,.035); justify-content:flex-start !important; text-align:left; }
 section[data-testid="stSidebar"] div[data-testid="stButton"] button:hover { border-left-color:var(--pink); background:rgba(255,43,214,.10);
   box-shadow:none; text-shadow:none; transform:none; }
-section[data-testid="stSidebar"] div[data-testid="stButton"] button > div,
+section[data-testid="stSidebar"] div[data-testid="stButton"] button > div { width:100%; justify-content:flex-start !important; }
+section[data-testid="stSidebar"] div[data-testid="stButton"] button > div > span { flex:1 1 auto; width:100%; justify-content:flex-start !important; }
 section[data-testid="stSidebar"] div[data-testid="stButton"] button div[data-testid="stMarkdownContainer"] { width:100%; }
 section[data-testid="stSidebar"] div[data-testid="stButton"] button p { display:grid; grid-template-columns:1fr auto; column-gap:12px;
   align-items:baseline; width:100%; margin:0; text-align:left !important; font-size:.88rem; font-weight:500; line-height:1.35; color:#e8e2ff; }
