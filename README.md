@@ -39,14 +39,16 @@ flowchart LR
 
 ## Evaluation
 
-`eval/questions.jsonl` holds 20 questions: 17 answerable (each linked to the paper that answers it) and 3 deliberately off-topic. `python -m eval.evaluate` reports, for the bi-encoder alone and with the reranker:
+Measured on the deployed app with the real models (`eval/results.md`), 20 questions: 17 answerable (each linked to the paper that answers it) and 3 deliberately off-topic.
 
-- **Recall@1 / @3 / @5**: is a passage from the correct paper in the top k?
-- **MRR**: mean reciprocal rank of the correct paper
-- **Refusal accuracy**: does the guard answer the answerable questions and refuse the off-topic ones?
-- **Citation check** (`--answers`): share of generated claims whose quotes were found in the cited source
+| Metric | Bi-encoder only | + Cross-encoder rerank |
+|---|---|---|
+| Recall@1 | 94.1% | **100%** |
+| MRR | 0.956 | **1.000** |
+| Recall@5 | 100% | 100% |
+| Refusal accuracy (answers 17, refuses 3) | 100% | 100% |
 
-Results are written to `eval/results.md` (the evaluation downloads the papers and models, so it is run on a machine with internet access).
+The reranker moves the correct paper to the top for every answerable question. The set is small, so treat these as a sanity check rather than a benchmark. Re-run with `python -m eval.evaluate` (add `--answers` to also measure quote verification; needs `GROQ_API_KEY`).
 
 ## Tests
 
